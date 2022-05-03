@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Blog = require("../models/blogModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -72,7 +73,7 @@ module.exports = {
       if (isMatch) {
         const deleteResponse = await User.findByIdAndDelete(req.user.id);
         if (deleteResponse !== null) {
-          //await Blog.deleteMany({ authorID: { $eq: req.user.id } });
+          await Blog.deleteMany({ authorID: { $eq: req.user.id } });
 
           return res.json({ msg: "success" });
         }
