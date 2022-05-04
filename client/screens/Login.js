@@ -5,25 +5,23 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Image
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 import { DOMAIN_NAME } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUserData } from "../context/UserContext";
 
-
-
 const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUserData } = useUserData();
 
-const loginUser = () => {
+  const loginUser = () => {
     return fetch(`http://${DOMAIN_NAME}:5050/user/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({  email, password }),
+      body: JSON.stringify({ email, password }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -37,15 +35,17 @@ const loginUser = () => {
       .then(() => props.navigation.navigate("Home"))
       .catch((err) => console.log(err));
   };
-
-  // create state for email
-  // create state for password
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Image style={styles.bitlogo} source={require("../assets/logo.png")} />
       <View style={styles.inputContainer}>
-        <TextInput onChangeText={setEmail} placeholder="Email" style={styles.input} />
-        <TextInput onChangeText={setPassword}
+        <TextInput
+          onChangeText={setEmail}
+          placeholder="Email"
+          style={styles.input}
+        />
+        <TextInput
+          onChangeText={setPassword}
           placeholder="Password"
           style={styles.input}
           secureTextEntry
@@ -55,7 +55,10 @@ const loginUser = () => {
         <TouchableOpacity onPress={loginUser} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => props.navigation.navigate("Register")} style={styles.button}>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate("Register")}
+          style={styles.button}
+        >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
@@ -67,7 +70,7 @@ export default Login;
 
 const styles = StyleSheet.create({
   container: {
-     flex: 1,
+    flex: 1,
     backgroundColor: "#91b1d6",
     alignItems: "center",
     justifyContent: "center",
