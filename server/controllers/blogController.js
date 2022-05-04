@@ -11,7 +11,7 @@ module.exports = {
   },
   getAllUserBlogs: async (req, res) => {
     try {
-      const myBlogs = await Blog.find({ authorID: req.body.userID });
+      const myBlogs = await Blog.find({ authorID: req.user.id });
       res.json(myBlogs);
     } catch (err) {
       res.json({ msg: err });

@@ -11,12 +11,19 @@ const Home = (props) => {
     }
   }, [userData]);
   return (
-    <View>
-      <Text>Home</Text>
+    <View style={styles.container}>
+      <Text>Welcome to bitblog</Text>
     </View>
   );
 };
 
 export default Home;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+     flex: 1,
+    backgroundColor: "#91b1d6",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
