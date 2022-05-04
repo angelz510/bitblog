@@ -15,12 +15,12 @@ export default function App() {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          {/* <Stack.Screen
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen
           name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        /> */}
+          options={{ headerShown: false }}>
+          {(props) => <Login {...props} />}
+          </Stack.Screen>
           <Stack.Screen name="Home" options={{ headerShown: false }}>
             {(props) => <Home {...props} />}
           </Stack.Screen>
