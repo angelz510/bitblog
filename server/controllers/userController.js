@@ -42,7 +42,6 @@ module.exports = {
       const user = await User.find({ email: req.body.email });
 
       const isMatch = await bcrypt.compare(req.body.password, user[0].password);
-      console.log(user[0] !== null && isMatch)
       if (user[0] !== null && isMatch) {
         const token = await jwt.sign(
           { id: user[0]._id },
