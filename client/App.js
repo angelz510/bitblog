@@ -8,7 +8,8 @@ import UserProvider from "./context/UserContext";
 import Login from "./screens/Login";
 import Home from "./screens/Home";
 import Register from "./screens/Register";
-import BlogPost from "./screens/BlogPost";
+import EditBlogPost from "./screens/EditBlogPost";
+import ViewBlogPost from "./screens/ViewBlogPost";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,8 +34,13 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="BlogPost"
-            component={BlogPost}
+            name="EditBlogPost"
+            component={EditBlogPost}
+            options={{ title: "", headerStyle: { backgroundColor: "#91B1D6" } }}
+          />
+          <Stack.Screen
+            name="ViewBlogPost"
+            component={ViewBlogPost}
             options={{ title: "", headerStyle: { backgroundColor: "#91B1D6" } }}
           />
         </Stack.Navigator>

@@ -9,34 +9,40 @@ import React, { useState } from "react";
 import { useUserData } from "../context/UserContext";
 import { DOMAIN_NAME } from "@env";
 
-const BlogPost = (props) => {
-  const [subjectText, setSubjectText] = useState("");
-  const [bodyText, setBodyText] = useState("");
-
+const EditBlogPost = (props) => {
   const { userData } = useUserData();
+  const { token, subject, text, blogID, onGoBack } = props.route.params;
 
-  const { token } = props.route.params;
+  const [subjectText, setSubjectText] = useState(subject ? subject : "");
+  const [bodyText, setBodyText] = useState(text ? text : "");
 
-  const createNewPost = async () => {
+  const handlePost = async () => {
     if (subjectText === "" || bodyText === "") {
       return;
     }
 
     try {
-      const res = await fetch(`http://${DOMAIN_NAME}:5050/blog`, {
-        method: "POST",
-        headers: new Headers({
-          "x-auth-token": token,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify({
-          subject: subjectText,
-          text: bodyText,
-          userID: userData._id,
-          userName: userData.userName,
-        }),
-      });
+      const res = await fetch(
+        subject
+          ? `http://${DOMAIN_NAME}:5050/blog/update`
+          : `http://${DOMAIN_NAME}:5050/blog`,
+        {
+          method: subject ? "PUT" : "POST",
+          headers: new Headers({
+            "x-auth-token": token,
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify({
+            subject: subjectText,
+            text: bodyText,
+            userID: userData._id,
+            userName: userData.userName,
+            blogID: blogID ? blogID : "",
+          }),
+        }
+      );
       await res.json();
+      onGoBack();
       return props.navigation.goBack();
     } catch (err) {
       return console.log(err);
@@ -48,11 +54,13 @@ const BlogPost = (props) => {
       <TextInput
         onChangeText={setSubjectText}
         placeholder="Subject"
+        value={subjectText}
         style={styles.subjectInput}
       />
       <TextInput
         onChangeText={setBodyText}
         placeholder="Body"
+        value={bodyText}
         style={styles.bodyInput}
         multiline
       />
@@ -64,15 +72,17 @@ const BlogPost = (props) => {
           paddingRight: 20,
         }}
       >
-        <TouchableOpacity onPress={createNewPost} style={styles.button}>
-          <Text style={{ color: "black", fontSize: 18 }}>Post</Text>
+        <TouchableOpacity onPress={handlePost} style={styles.button}>
+          <Text style={{ color: "black", fontSize: 18 }}>
+            {subject ? "Update" : "Post"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default BlogPost;
+export default EditBlogPost;
 
 const styles = StyleSheet.create({
   subjectInput: {
@@ -100,7 +110,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "blue",
-    width: 60,
+    width: 70,
     height: 30,
     borderRadius: 5,
     flexDirection: "row",
