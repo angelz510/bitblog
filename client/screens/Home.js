@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   View,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useUserData } from "../context/UserContext";
@@ -11,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DOMAIN_NAME } from "@env";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import { StatusBarHeight } from "../utils/StatusBarHeight";
 
 import BlogCard from "../components/BlogCard";
 
@@ -93,11 +95,16 @@ const Home = (props) => {
 
   return (
     <View style={styles.container}>
+      <View style={{ height: StatusBarHeight }} />
       <View style={styles.topBar}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            props.navigation.navigate("BlogPost", { token: token.current })
+          }
+        >
           <AntDesign name="pluscircle" size={30} color="black" />
         </TouchableOpacity>
-        <Text>USERNAME</Text>
+        <Text>{userData.userName}</Text>
         <TouchableOpacity onPress={signOut}>
           <FontAwesome5 name="sign-out-alt" size={30} color="#FF934F" />
         </TouchableOpacity>
@@ -140,7 +147,7 @@ const Home = (props) => {
       </View>
 
       {isLoading ? (
-        <></>
+        <ActivityIndicator size="large" color="#FFF" />
       ) : (
         <FlatList
           data={blogData.current}

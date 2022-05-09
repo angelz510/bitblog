@@ -19,23 +19,24 @@ const Register = (props) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const { setUserData } = useUserData();
 
-  const registerUser = () => {
-    return fetch(`http://${DOMAIN_NAME}:5050/user`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userName, email, password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUserData({
-          id: data._id,
-          userName: data.userName,
-          email: data.email,
-        });
-        AsyncStorage.setItem("token", data.token);
-      })
-      .then(() => props.navigation.navigate("Home"))
-      .catch((err) => console.log(err));
+  const registerUser = async () => {
+    try {
+      const res = await fetch(`http://${DOMAIN_NAME}:5050/user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userName, email, password }),
+      });
+      const data = await res.json();
+      setUserData({
+        id: data._id,
+        userName: data.userName,
+        email: data.email,
+      });
+      await AsyncStorage.setItem("token", data.token);
+      return props.navigation.navigate("Home");
+    } catch (err) {
+      return console.log(err);
+    }
   };
 
   return (
@@ -68,7 +69,11 @@ const Register = (props) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            if (password === confirmPassword) {
+            if (
+              password === confirmPassword &&
+              password !== "" &&
+              confirmPassword !== ""
+            ) {
               registerUser();
             }
           }}
@@ -78,7 +83,7 @@ const Register = (props) => {
           <Text style={styles.registerButton}>Register</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => props.navigation.navigate("Login")}
+          onPress={() => props.navigation.replace("Login")}
           style={styles.button}
         >
           <Text style={styles.loginButton}>Login</Text>
@@ -100,27 +105,28 @@ const styles = StyleSheet.create({
   bitlogo: {
     width: 220,
     height: 220,
-    marginBottom: "-35px",
+    marginBottom: -35,
   },
   registerInput: {
-    border: "1px solid gray",
-    borderRadius: "5px",
-    margin: "5px",
-    padding: "5px",
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    margin: 5,
+    padding: 5,
     backgroundColor: "whitesmoke",
   },
   registerButton: {
     backgroundColor: "#2c3c46",
     color: "#91b1d6",
-    padding: "10px",
-    borderRadius: "5px",
-    marginTop: "10px",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
   },
   loginButton: {
     backgroundColor: "#2c3c46",
     color: "#91b1d6",
-    padding: "10px",
-    borderRadius: "5px",
-    marginTop: "10px",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
   },
 });
