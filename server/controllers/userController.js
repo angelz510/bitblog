@@ -32,7 +32,20 @@ module.exports = {
         password: hashedPW,
       }).save();
 
-      res.json(newUser);
+      const token = await jwt.sign(
+        { id: newUser._id },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "24h",
+        }
+      );
+
+      res.json({
+        _id: newUser._id,
+        userName: newUser.userName,
+        email: newUser.email,
+        token: token,
+      });
     } catch (err) {
       res.json({ msg: err });
     }

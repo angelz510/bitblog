@@ -11,7 +11,9 @@ module.exports = {
   },
   getAllUserBlogs: async (req, res) => {
     try {
-      const myBlogs = await Blog.find({ authorID: req.user.id });
+      const myBlogs = await Blog.find({ authorID: req.user.id }).sort({
+        _id: -1,
+      });
       res.json(myBlogs);
     } catch (err) {
       res.json({ msg: err });
@@ -19,12 +21,22 @@ module.exports = {
   },
 
   createNewBlog: async (req, res) => {
+    const newDate = new Date()
+      .toLocaleString([], {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+      .replace(",", "");
+
     try {
       const newBlog = new Blog({
         subject: req.body.subject,
         text: req.body.text,
         userName: req.body.userName,
-        createdAt: req.body.createdAt,
+        createdAt: newDate,
         authorID: req.user.id,
       });
       res.json(await newBlog.save());

@@ -56,7 +56,7 @@ const Login = (props) => {
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => props.navigation.navigate("Register")}
+          onPress={() => props.navigation.replace("Register")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
@@ -78,20 +78,24 @@ const styles = StyleSheet.create({
   bitlogo: {
     width: 220,
     height: 220,
-    marginBottom: "-35px",
+    marginBottom: -35,
   },
   input: {
-    border: "1px solid gray",
-    borderRadius: "5px",
-    margin: "5px",
-    padding: "5px",
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    margin: 5,
+    padding: 5,
     backgroundColor: "whitesmoke",
   },
   buttonText: {
     backgroundColor: "#2c3c46",
     color: "#91b1d6",
-    padding: "10px",
-    borderRadius: "5px",
-    marginTop: "10px",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  inputContainer: {
+    width: 200,
   },
 });

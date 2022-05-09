@@ -8,6 +8,7 @@ import UserProvider from "./context/UserContext";
 import Login from "./screens/Login";
 import Home from "./screens/Home";
 import Register from "./screens/Register";
+import BlogPost from "./screens/BlogPost";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,17 +18,24 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
-          name="Login"
-          options={{ headerShown: false }}>
-          {(props) => <Login {...props} />}
-          </Stack.Screen>
-          <Stack.Screen name="Home" options={{ headerShown: false }}>
-            {(props) => <Home {...props} />}
-          </Stack.Screen>
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="Register"
             component={Register}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="BlogPost"
+            component={BlogPost}
+            options={{ title: "", headerStyle: { backgroundColor: "#91B1D6" } }}
           />
         </Stack.Navigator>
       </NavigationContainer>
