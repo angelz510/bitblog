@@ -20,7 +20,6 @@ const Register = (props) => {
   const { setUserData } = useUserData();
 
   const registerUser = () => {
-    console.log(DOMAIN_NAME)
     return fetch(`http://${DOMAIN_NAME}:5050/user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -78,7 +77,10 @@ const Register = (props) => {
           {/* on register push to home */}
           <Text style={styles.registerButton}>Register</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => props.navigation.navigate("Login")} style={styles.button}>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate("Login")}
+          style={styles.button}
+        >
           <Text style={styles.loginButton}>Login</Text>
         </TouchableOpacity>
       </View>
