@@ -89,6 +89,10 @@ const Home = (props) => {
     }
   };
 
+  const refresh = () => {
+    getBlogs(userActive ? "user" : "latest", token.current);
+  };
+
   useEffect(() => {
     handleRoute();
   }, []);
@@ -99,7 +103,10 @@ const Home = (props) => {
       <View style={styles.topBar}>
         <TouchableOpacity
           onPress={() =>
-            props.navigation.navigate("BlogPost", { token: token.current })
+            props.navigation.navigate("EditBlogPost", {
+              token: token.current,
+              onGoBack: refresh,
+            })
           }
         >
           <AntDesign name="pluscircle" size={30} color="black" />
@@ -151,7 +158,14 @@ const Home = (props) => {
       ) : (
         <FlatList
           data={blogData.current}
-          renderItem={BlogCard}
+          renderItem={({ item }) => (
+            <BlogCard
+              {...props}
+              item={item}
+              token={token.current}
+              onGoBack={refresh}
+            />
+          )}
           keyExtractor={(item, index) => index.toString()}
         />
       )}

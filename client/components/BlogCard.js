@@ -1,14 +1,25 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
 
-const BlogCard = ({ item }) => {
+const BlogCard = ({ item, token, navigation, onGoBack }) => {
   return (
-    <View style={styles.container}>
-      <Text>{item.subject}</Text>
-      <Text>{item.userName}</Text>
-      <Text>{item.createdAt}</Text>
-      <Text>{item.text}</Text>
-    </View>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() =>
+        navigation.navigate("ViewBlogPost", {
+          blogItem: item,
+          token: token,
+          onGoBack: onGoBack,
+        })
+      }
+    >
+      <Text style={styles.subject}>{item.subject}</Text>
+      <Text style={styles.text}>{item.userName}</Text>
+      <Text style={styles.text}>{item.createdAt}</Text>
+      <Text numberOfLines={2} style={styles.text}>
+        {item.text}
+      </Text>
+    </TouchableOpacity>
   );
 };
 
@@ -23,5 +34,16 @@ const styles = StyleSheet.create({
     padding: 20,
     marginTop: 20,
     marginBottom: 20,
+  },
+  subject: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  text: {
+    color: "black",
+    fontSize: 15,
+    marginTop: 2,
+    marginBottom: 2,
   },
 });
