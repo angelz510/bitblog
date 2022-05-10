@@ -13,9 +13,19 @@ const BlogCard = ({ item, token, navigation, onGoBack, userActive }) => {
         })
       }
     >
-      <Text style={styles.subject}>{item.subject}</Text>
-      {userActive ? <></> : <Text style={styles.text}>{item.userName}</Text>}
-      <Text style={styles.text}>{item.createdAt}</Text>
+      <Text numberOfLines={1} style={styles.subject}>
+        {item.subject}
+      </Text>
+      {userActive ? (
+        <></>
+      ) : (
+        <Text numberOfLines={1} style={styles.text}>
+          {item.userName}
+        </Text>
+      )}
+      <Text numberOfLines={1} style={styles.text}>
+        {item.createdAt}
+      </Text>
       <Text numberOfLines={2} style={styles.text}>
         {item.text}
       </Text>
