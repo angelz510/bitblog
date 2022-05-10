@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { DOMAIN_NAME } from "@env";
 import { useUserData } from "../context/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LoadScreen from "../components/LoadScreen";
 
 const Register = (props) => {
   const [userName, setUserName] = useState("");
@@ -18,8 +19,10 @@ const Register = (props) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { setUserData } = useUserData();
+  const [showLoadScreen, setShowLoadScreen] = useState(false);
 
   const registerUser = async () => {
+    setShowLoadScreen(true);
     try {
       const res = await fetch(`http://${DOMAIN_NAME}:5050/user`, {
         method: "POST",
@@ -33,63 +36,68 @@ const Register = (props) => {
         email: data.email,
       });
       await AsyncStorage.setItem("token", data.token);
+      setShowLoadScreen(false);
       return props.navigation.navigate("Home");
     } catch (err) {
+      setShowLoadScreen(false);
       return console.log(err);
     }
   };
 
   return (
-    <KeyboardAvoidingView style={styles.registerContainer}>
-      <Image style={styles.bitlogo} source={require("../assets/logo.png")} />
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Username"
-          onChangeText={setUserName}
-          style={styles.registerInput}
-        />
-        <TextInput
-          placeholder="Email"
-          onChangeText={setEmail}
-          style={styles.registerInput}
-        />
-        <TextInput
-          placeholder="Password"
-          onChangeText={setPassword}
-          style={styles.registerInput}
-          secureTextEntry
-        />
-        <TextInput
-          placeholder="Confirm Password"
-          onChangeText={setConfirmPassword}
-          style={styles.registerInput}
-          secureTextEntry
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            if (
-              password === confirmPassword &&
-              password !== "" &&
-              confirmPassword !== ""
-            ) {
-              registerUser();
-            }
-          }}
-          style={styles.button}
-        >
-          {/* on register push to home */}
-          <Text style={styles.registerButton}>Register</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => props.navigation.replace("Login")}
-          style={styles.button}
-        >
-          <Text style={styles.loginButton}>Login</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+    <>
+      <KeyboardAvoidingView style={styles.registerContainer}>
+        <Image style={styles.bitlogo} source={require("../assets/logo.png")} />
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Username"
+            onChangeText={setUserName}
+            style={styles.registerInput}
+          />
+          <TextInput
+            placeholder="Email"
+            onChangeText={setEmail}
+            style={styles.registerInput}
+          />
+          <TextInput
+            placeholder="Password"
+            onChangeText={setPassword}
+            style={styles.registerInput}
+            secureTextEntry
+          />
+          <TextInput
+            placeholder="Confirm Password"
+            onChangeText={setConfirmPassword}
+            style={styles.registerInput}
+            secureTextEntry
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              if (
+                password === confirmPassword &&
+                password !== "" &&
+                confirmPassword !== ""
+              ) {
+                registerUser();
+              }
+            }}
+            style={styles.button}
+          >
+            {/* on register push to home */}
+            <Text style={styles.registerButton}>Submit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => props.navigation.replace("Login")}
+            style={styles.button}
+          >
+            <Text style={styles.loginButton}>Login</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+      {showLoadScreen ? <LoadScreen /> : <></>}
+    </>
   );
 };
 
@@ -121,6 +129,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+    textAlign: "center",
   },
   loginButton: {
     backgroundColor: "#2c3c46",
@@ -128,5 +137,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+    textAlign: "center",
+  },
+  inputContainer: {
+    width: 200,
   },
 });

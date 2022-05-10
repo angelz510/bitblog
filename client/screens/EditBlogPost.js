@@ -8,6 +8,7 @@ import {
 import React, { useState } from "react";
 import { useUserData } from "../context/UserContext";
 import { DOMAIN_NAME } from "@env";
+import LoadScreen from "../components/LoadScreen";
 
 const EditBlogPost = (props) => {
   const { userData } = useUserData();
@@ -16,8 +17,12 @@ const EditBlogPost = (props) => {
   const [subjectText, setSubjectText] = useState(subject ? subject : "");
   const [bodyText, setBodyText] = useState(text ? text : "");
 
+  const [showLoadScreen, setShowLoadScreen] = useState(false);
+
   const handlePost = async () => {
+    setShowLoadScreen(true);
     if (subjectText === "" || bodyText === "") {
+      setShowLoadScreen(false);
       return;
     }
 
@@ -43,42 +48,47 @@ const EditBlogPost = (props) => {
       );
       await res.json();
       onGoBack();
+      setShowLoadScreen(false);
       return props.navigation.goBack();
     } catch (err) {
+      setShowLoadScreen(false);
       return console.log(err);
     }
   };
 
   return (
-    <View style={{ backgroundColor: "#2C3C46", flex: 1 }}>
-      <TextInput
-        onChangeText={setSubjectText}
-        placeholder="Subject"
-        value={subjectText}
-        style={styles.subjectInput}
-      />
-      <TextInput
-        onChangeText={setBodyText}
-        placeholder="Body"
-        value={bodyText}
-        style={styles.bodyInput}
-        multiline
-      />
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          paddingTop: 20,
-          paddingRight: 20,
-        }}
-      >
-        <TouchableOpacity onPress={handlePost} style={styles.button}>
-          <Text style={{ color: "black", fontSize: 18 }}>
-            {subject ? "Update" : "Post"}
-          </Text>
-        </TouchableOpacity>
+    <>
+      <View style={{ backgroundColor: "#2C3C46", flex: 1 }}>
+        <TextInput
+          onChangeText={setSubjectText}
+          placeholder="Subject"
+          value={subjectText}
+          style={styles.subjectInput}
+        />
+        <TextInput
+          onChangeText={setBodyText}
+          placeholder="Body"
+          value={bodyText}
+          style={styles.bodyInput}
+          multiline
+        />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            paddingTop: 20,
+            paddingRight: 20,
+          }}
+        >
+          <TouchableOpacity onPress={handlePost} style={styles.button}>
+            <Text style={{ color: "black", fontSize: 18 }}>
+              {subject ? "Update" : "Post"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+      {showLoadScreen ? <LoadScreen /> : <></>}
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
 
-const BlogCard = ({ item, token, navigation, onGoBack }) => {
+const BlogCard = ({ item, token, navigation, onGoBack, userActive }) => {
   return (
     <TouchableOpacity
       style={styles.container}
@@ -14,7 +14,7 @@ const BlogCard = ({ item, token, navigation, onGoBack }) => {
       }
     >
       <Text style={styles.subject}>{item.subject}</Text>
-      <Text style={styles.text}>{item.userName}</Text>
+      {userActive ? <></> : <Text style={styles.text}>{item.userName}</Text>}
       <Text style={styles.text}>{item.createdAt}</Text>
       <Text numberOfLines={2} style={styles.text}>
         {item.text}
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
     width: 350,
     height: 150,
     padding: 20,
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
   },
   subject: {
     color: "black",

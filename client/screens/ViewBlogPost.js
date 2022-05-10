@@ -1,15 +1,19 @@
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { useUserData } from "../context/UserContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import { DOMAIN_NAME } from "@env";
+import LoadScreen from "../components/LoadScreen";
 
 const ViewBlogPost = (props) => {
   const { userData } = useUserData();
 
   const { blogItem, token, onGoBack } = props.route.params;
 
+  const [showLoadScreen, setShowLoadScreen] = useState(false);
+
   const deleteBlog = async () => {
+    setShowLoadScreen(true);
     try {
       const res = await fetch(`http://${DOMAIN_NAME}:5050/blog/delete`, {
         method: "DELETE",
@@ -23,8 +27,10 @@ const ViewBlogPost = (props) => {
       });
       await res.json();
       onGoBack();
+      setShowLoadScreen(false);
       return props.navigation.goBack();
     } catch (err) {
+      setShowLoadScreen(false);
       return console.log(err);
     }
   };
@@ -42,57 +48,56 @@ const ViewBlogPost = (props) => {
       ],
       {
         cancelable: true,
-        onDismiss: () =>
-          console.log(
-            "This alert was dismissed by tapping outside of the alert dialog."
-          ),
       }
     );
 
   return (
-    <View style={{ backgroundColor: "#2C3C46", flex: 1, padding: 15 }}>
-      <Text style={styles.subject}>{blogItem.subject}</Text>
+    <>
+      <View style={{ backgroundColor: "#2C3C46", flex: 1, padding: 15 }}>
+        <Text style={styles.subject}>{blogItem.subject}</Text>
 
-      {userData.id === blogItem.authorID ? (
-        <></>
-      ) : (
-        <Text style={styles.text}>by {blogItem.userName}</Text>
-      )}
-
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={styles.text}>{blogItem.createdAt}</Text>
         {userData.id === blogItem.authorID ? (
-          <View
-            style={{
-              flexDirection: "row",
-              width: 100,
-              justifyContent: "space-around",
-            }}
-          >
-            <TouchableOpacity
-              onPress={() =>
-                props.navigation.replace("EditBlogPost", {
-                  token: token,
-                  subject: blogItem.subject,
-                  text: blogItem.text,
-                  blogID: blogItem._id,
-                  onGoBack: onGoBack,
-                })
-              }
-            >
-              <MaterialIcons name="edit" size={30} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={showAlert}>
-              <MaterialIcons name="delete" size={30} color="#FF934F" />
-            </TouchableOpacity>
-          </View>
-        ) : (
           <></>
+        ) : (
+          <Text style={styles.text}>by {blogItem.userName}</Text>
         )}
-      </View>
 
-      <Text style={styles.text}>{blogItem.text}</Text>
-    </View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={styles.text}>{blogItem.createdAt}</Text>
+          {userData.id === blogItem.authorID ? (
+            <View
+              style={{
+                flexDirection: "row",
+                width: 100,
+                justifyContent: "space-around",
+              }}
+            >
+              <TouchableOpacity
+                onPress={() =>
+                  props.navigation.replace("EditBlogPost", {
+                    token: token,
+                    subject: blogItem.subject,
+                    text: blogItem.text,
+                    blogID: blogItem._id,
+                    onGoBack: onGoBack,
+                  })
+                }
+              >
+                <MaterialIcons name="edit" size={30} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={showAlert}>
+                <MaterialIcons name="delete" size={30} color="#FF934F" />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <></>
+          )}
+        </View>
+
+        <Text style={styles.text}>{blogItem.text}</Text>
+      </View>
+      {showLoadScreen ? <LoadScreen /> : <></>}
+    </>
   );
 };
 
