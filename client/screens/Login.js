@@ -11,58 +11,67 @@ import React, { useState } from "react";
 import { DOMAIN_NAME } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUserData } from "../context/UserContext";
+import LoadScreen from "../components/LoadScreen";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUserData } = useUserData();
+  const [showLoadScreen, setShowLoadScreen] = useState(false);
 
-  const loginUser = () => {
-    return fetch(`http://${DOMAIN_NAME}:5050/user/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUserData({
-          id: data._id,
-          userName: data.userName,
-          email: data.email,
-        });
-        AsyncStorage.setItem("token", data.token);
-      })
-      .then(() => props.navigation.navigate("Home"))
-      .catch((err) => console.log(err));
+  const loginUser = async () => {
+    setShowLoadScreen(true);
+    try {
+      const res = await fetch(`http://${DOMAIN_NAME}:5050/user/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      setUserData({
+        id: data._id,
+        userName: data.userName,
+        email: data.email,
+      });
+      AsyncStorage.setItem("token", data.token);
+      setShowLoadScreen(false);
+      return props.navigation.navigate("Home");
+    } catch (err) {
+      setShowLoadScreen(false);
+      return console.log(err);
+    }
   };
   return (
-    <KeyboardAvoidingView style={styles.container}>
-      <Image style={styles.bitlogo} source={require("../assets/logo.png")} />
-      <View style={styles.inputContainer}>
-        <TextInput
-          onChangeText={setEmail}
-          placeholder="Email"
-          style={styles.input}
-        />
-        <TextInput
-          onChangeText={setPassword}
-          placeholder="Password"
-          style={styles.input}
-          secureTextEntry
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={loginUser} style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => props.navigation.replace("Register")}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+    <>
+      <KeyboardAvoidingView style={styles.container}>
+        <Image style={styles.bitlogo} source={require("../assets/logo.png")} />
+        <View style={styles.inputContainer}>
+          <TextInput
+            onChangeText={setEmail}
+            placeholder="Email"
+            style={styles.input}
+          />
+          <TextInput
+            onChangeText={setPassword}
+            placeholder="Password"
+            style={styles.input}
+            secureTextEntry
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={loginUser} style={styles.button}>
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => props.navigation.replace("Register")}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+      {showLoadScreen ? <LoadScreen /> : <></>}
+    </>
   );
 };
 
@@ -94,6 +103,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+    textAlign: "center",
   },
   inputContainer: {
     width: 200,
