@@ -35,7 +35,7 @@ const Login = (props) => {
       });
       AsyncStorage.setItem("token", data.token);
       setShowLoadScreen(false);
-      return props.navigation.navigate("Home");
+      return props.navigation.replace("Home");
     } catch (err) {
       setShowLoadScreen(false);
       return console.log(err);

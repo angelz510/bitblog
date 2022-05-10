@@ -71,10 +71,12 @@ const Home = (props) => {
   };
 
   const signOut = () => {
-    setShowLoadScreen(true);
     AsyncStorage.removeItem("token");
     setUserData({});
-    props.navigation.replace("Login");
+    props.navigation.reset({
+      index: 0,
+      routes: [{ name: "Login" }],
+    });
   };
 
   const handleRoute = async () => {
@@ -84,7 +86,10 @@ const Home = (props) => {
         await getUser(token.current);
         await getBlogs("latest", token.current);
       } else {
-        props.navigation.replace("Login");
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "Login" }],
+        });
       }
     } else {
       if (token.current !== null) {
@@ -104,7 +109,7 @@ const Home = (props) => {
   return (
     <>
       <View style={styles.container}>
-        <View style={{ height: StatusBarHeight }} />
+        <View style={{ height: StatusBarHeight + 10 }} />
         <View style={styles.topBar}>
           <TouchableOpacity
             onPress={() =>
@@ -119,7 +124,12 @@ const Home = (props) => {
           <Text style={{ fontSize: 20, fontWeight: "bold", color: "darkblue" }}>
             {userData.userName}
           </Text>
-          <TouchableOpacity onPress={signOut}>
+          <TouchableOpacity
+            onPress={() => {
+              setShowLoadScreen(true);
+              signOut();
+            }}
+          >
             <FontAwesome5 name="sign-out-alt" size={30} color="#FF934F" />
           </TouchableOpacity>
         </View>
